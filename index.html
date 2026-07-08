@@ -68,7 +68,7 @@
     const tg = window.Telegram.WebApp;
     tg.expand(); // Розгортаємо на весь екран
     // $("#txt1").append(tg.initData);
-    document.getElementById("txt1").textContent=tg.initData;
+    document.getElementById("txt1").textContent="id="+tg.initDataUnsafe.user.id;
     let cart = [];
 
     function addToCart(name, price) {
