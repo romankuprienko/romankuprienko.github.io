@@ -60,14 +60,15 @@
         <button onclick="addToCart('Товар 3', 300)">Додати</button>
     </div>
     <div class="product">
-        <span id="txt1">TEST2</span>
+        <span id="txt1">TEST5</span>
     </div>
 </div>
 
 <script>
     const tg = window.Telegram.WebApp;
     tg.expand(); // Розгортаємо на весь екран
-    $("#txt1").append(tg.initData);
+    // $("#txt1").append(tg.initData);
+    document.getElementById("txt1").textContent=tg.initData;
     let cart = [];
 
     function addToCart(name, price) {
