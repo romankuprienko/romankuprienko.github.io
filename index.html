@@ -5,49 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini Shop</title>
     <!-- Підключаємо офіційний скрипт Telegram Web App -->
-    <script src="https://telegram.org"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js?62"></script>
     <style>
-        body { font-family: sans-serif; background: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); padding: 15px; }
-        .product { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;}
-        button { background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
+        body {
+            font-family: sans-serif;
+            background: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            padding: 15px;
+        }
+
+        .product {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        button {
+            background: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <h3>Наш Каталог (15 позицій)</h3>
-    <div id="catalog">
-        <!-- Приклад картки товару, скопіюйте її для інших позицій -->
-        <div class="product">
-            <div>
-                <strong>Товар 1</strong><br>
-                <span>Ціна: 150 грн</span>
-            </div>
-            <button onclick="addToCart('Товар 1', 150)">Додати</button>
+<h3>Наш Каталог (15 позицій)</h3>
+<div id="catalog">
+    <!-- Приклад картки товару, скопіюйте її для інших позицій -->
+    <div class="product">
+        <div>
+            <strong>Товар 1</strong><br>
+            <span>Ціна: 150 грн</span>
         </div>
+        <button onclick="addToCart('Товар 1', 150)">Додати</button>
     </div>
+    <div class="product">
+        <div>
+            <strong>Товар 2</strong><br>
+            <span>Ціна: 200 грн</span>
+        </div>
+        <button onclick="addToCart('Товар 2', 200)">Додати</button>
+    </div>
+    <div class="product">
+        <div>
+            <strong>Товар 3</strong><br>
+            <span>Ціна: 300 грн</span>
+        </div>
+        <button onclick="addToCart('Товар 3', 300)">Додати</button>
+    </div>
+    <div class="product">
+        <span id="text">TEST</span>
+    </div>
+</div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // Розгортаємо на весь екран
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // Розгортаємо на весь екран
 
-        let cart = [];
+    let cart = [];
 
-        function addToCart(name, price) {
-            cart.push({ name, price });
-            // Налаштовуємо Головну Кнопку Telegram знизу екрана
-            tg.MainButton.text = `Оформити замовлення (${cart.length})`;
-            tg.MainButton.show();
-        }
+    function addToCart(name, price) {
+        cart.push({name, price});
+        // Налаштовуємо Головну Кнопку Telegram знизу екрана
+        tg.MainButton.text = 'Оформити замовлення (${cart.length})';
+        tg.MainButton.show();
+    }
 
-        // Обробник натискання на головну кнопку Telegram
-        tg.onEvent('mainButtonClicked', function() {
-            let total = cart.reduce((sum, item) => sum + item.price, 0);
-            let orderData = {
-                items: cart.map(i => i.name),
-                total: total
-            };
-            // Відправляємо дані в бот у форматі JSON-рядка
-            tg.sendData(JSON.stringify(orderData));
-        });
-    </script>
+    // Обробник натискання на головну кнопку Telegram
+    tg.onEvent('mainButtonClicked', function () {
+        let total = cart.reduce((sum, item) => sum + item.price, 0);
+        let orderData = {
+            items: cart.map(i => i.name),
+            total: total
+        };
+        // Відправляємо дані в бот у форматі JSON-рядка
+        tg.sendData(JSON.stringify(orderData));
+    });
+</script>
 </body>
 </html>
