@@ -4,92 +4,166 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini Shop</title>
-    <!-- Підключаємо офіційний скрипт Telegram Web App -->
     <script src="https://telegram.org/js/telegram-web-app.js?62"></script>
     <style>
         body {
             font-family: sans-serif;
             background: var(--tg-theme-bg-color);
             color: var(--tg-theme-text-color);
-            padding: 5px;
+            padding: 15px;
+            margin: 0;
+        }
+
+        h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 80px;
         }
 
         .product {
             border: 1px solid #ccc;
-            padding: 5px;
-            margin-bottom: 10px;
+            padding: 12px;
             border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: rgba(0, 0, 0, 0.02);
         }
 
-        button {
+        .product-info {
+            flex-grow: 1;
+        }
+
+        .product-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .product-price {
+            color: #888;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .counter-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-counter {
             background: var(--tg-theme-button-color);
             color: var(--tg-theme-button-text-color);
             border: none;
-            padding: 8px 12px;
+            width: 32px;
+            height: 32px;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .count-value {
+            font-size: 16px;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 <h3>Наш Каталог</h3>
-<div id="catalog">
-    <!-- Приклад картки товару, скопіюйте її для інших позицій -->
-    <div class="product">
-        <div>
-            <strong>Товар 1</strong><br>
-            <span>Ціна: 150 грн</span>
+
+<div class="product-list" id="catalog">
+    <!-- Приклад картки. Скопіюйте цей блок для решти ваших 15 товарів, змінивши ID, назву та ціну -->
+    <div class="product" id="prod-1">
+        <div class="product-info">
+            <div class="product-name">Товар 1</div>
+            <div class="product-price">150 грн</div>
         </div>
-        <button onclick="addToCart('Товар 1', 150)">Додати</button>
-    </div>
-    <div class="product">
-        <div>
-            <strong>Товар 2</strong><br>
-            <span>Ціна: 200 грн</span>
+        <div class="counter-box">
+            <button class="btn-counter" onclick="changeCount('Товар 1', 150, -1)">-</button>
+            <div class="count-value" id="count-Товар 1">0</div>
+            <button class="btn-counter" onclick="changeCount('Товар 1', 150, 1)">+</button>
         </div>
-        <button onclick="addToCart('Товар 2', 200)">Додати</button>
     </div>
-    <div class="product">
-        <div>
-            <strong>Товар 3</strong><br>
-            <span>Ціна: 300 грн</span>
+
+    <div class="product" id="prod-2">
+        <div class="product-info">
+            <div class="product-name">Товар 2</div>
+            <div class="product-price">200 грн</div>
         </div>
-        <button onclick="addToCart('Товар 3', 300)">Додати</button>
-    </div>
-    <div class="product">
-        <span id="txt1">TEST6</span>
+        <div class="counter-box">
+            <button class="btn-counter" onclick="changeCount('Товар 2', 200, -1)">-</button>
+            <div class="count-value" id="count-Товар 2">0</div>
+            <button class="btn-counter" onclick="changeCount('Товар 2', 200, 1)">+</button>
+        </div>
     </div>
 </div>
 
 <script>
     const tg = window.Telegram.WebApp;
-    let cart = [];
-    tg.expand(); // Розгортаємо на весь екран
-    // $("#txt1").append(tg.initData);
-    document.getElementById("txt1").textContent = "GOOD!";
-    document.getElementById("txt1").textContent = "initData=" + tg.initData;
+    tg.expand();
 
-    //document.getElementById("txt1").textContent = "id=" + tg.initDataUnsafe.user.id;
+    // Об'єкт кошика, де ключ — назва товару
+    let cart = {};
 
-    function addToCart(name, price) {
-        cart.push({name, price});
-        // Налаштовуємо Головну Кнопку Telegram знизу екрана
-        tg.MainButton.setText("Оформити замовлення " + name); //  (${cart.length})
-        tg.MainButton.show();
-        
+    function changeCount(name, price, change) {
+        if (!cart[name]) {
+            cart[name] = {name: name, price: price, count: 0};
+        }
+
+        cart[name].count += change;
+
+        // Якщо кількість стала 0 або менше, видаляємо товар з кошика
+        if (cart[name].count <= 0) {
+            cart[name].count = 0;
+            delete cart[name];
+        }
+
+        // Оновлюємо цифру лічильника на екрані
+        document.getElementById(`count-${name}`).innerText = cart[name] ? cart[name].count : 0;
+
+        updateMainButton();
     }
 
-    // Обробник натискання на головну кнопку Telegram
+    function updateMainButton() {
+        let totalItems = 0;
+        let totalPrice = 0;
+
+        for (let key in cart) {
+            totalItems += cart[key].count;
+            totalPrice += cart[key].count * cart[key].price;
+        }
+
+        if (totalItems > 0) {
+            tg.MainButton.text = `Оформити замовлення (${totalItems} шт. — ${totalPrice} грн)`;
+            tg.MainButton.show();
+        } else {
+            tg.MainButton.hide();
+        }
+    }
+
+    // Обробник натискання на головну кнопку Telegram знизу
     tg.onEvent('mainButtonClicked', function () {
-        let total = cart.reduce((sum, item) => sum + item.price, 0);
+        let orderItems = Object.values(cart);
+        let totalPrice = orderItems.reduce((sum, item) => sum + (item.count * item.price), 0);
+
         let orderData = {
-            items: cart.map(i => i.name),
-            total: total
+            items: orderItems, // Передаємо масив об'єктів з кількістю
+            total: totalPrice
         };
-        // Відправляємо дані в бот у форматі JSON-рядка
+
+        // Надсилаємо структуровані дані в Python-код
         tg.sendData(JSON.stringify(orderData));
     });
 </script>
