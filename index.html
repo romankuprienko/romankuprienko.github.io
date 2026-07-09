@@ -60,22 +60,22 @@
         <button onclick="addToCart('Товар 3', 300)">Додати</button>
     </div>
     <div class="product">
-        <span id="txt1">TEST5</span>
+        <span id="txt1">TEST6</span>
     </div>
 </div>
 
 <script>
     const tg = window.Telegram.WebApp;
+    let cart = [];
     tg.expand(); // Розгортаємо на весь екран
     // $("#txt1").append(tg.initData);
     document.getElementById("txt1").textContent = "GOOD!";
     document.getElementById("txt1").textContent = "initData=" + tg.initData;
 
-    document.getElementById("txt1").textContent = "id=" + tg.initDataUnsafe.user.id;
-    let cart = [];
+    //document.getElementById("txt1").textContent = "id=" + tg.initDataUnsafe.user.id;
 
     function addToCart(name, price) {
-        //cart.push({name, price});
+        cart.push({name, price});
         // Налаштовуємо Головну Кнопку Telegram знизу екрана
         tg.MainButton.text = "Оформити замовлення " + name; //  (${cart.length})
         tg.MainButton.show();
