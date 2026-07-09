@@ -77,8 +77,9 @@
     function addToCart(name, price) {
         cart.push({name, price});
         // Налаштовуємо Головну Кнопку Telegram знизу екрана
-        tg.MainButton.text = "Оформити замовлення " + name; //  (${cart.length})
+        tg.MainButton.setText("Оформити замовлення " + name); //  (${cart.length})
         tg.MainButton.show();
+        
     }
 
     // Обробник натискання на головну кнопку Telegram
