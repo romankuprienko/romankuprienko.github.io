@@ -11,12 +11,12 @@
             font-family: sans-serif;
             background: var(--tg-theme-bg-color);
             color: var(--tg-theme-text-color);
-            padding: 15px;
+            padding: 5px;
         }
 
         .product {
             border: 1px solid #ccc;
-            padding: 10px;
+            padding: 5px;
             margin-bottom: 10px;
             border-radius: 8px;
             display: flex;
@@ -35,7 +35,7 @@
     </style>
 </head>
 <body>
-<h3>Наш Каталог (15 позицій)</h3>
+<h3>Наш Каталог</h3>
 <div id="catalog">
     <!-- Приклад картки товару, скопіюйте її для інших позицій -->
     <div class="product">
@@ -68,13 +68,16 @@
     const tg = window.Telegram.WebApp;
     tg.expand(); // Розгортаємо на весь екран
     // $("#txt1").append(tg.initData);
-    document.getElementById("txt1").textContent="id="+tg.initDataUnsafe.user.id;
+    document.getElementById("txt1").textContent = "GOOD!";
+    document.getElementById("txt1").textContent = "initData=" + tg.initData;
+
+    document.getElementById("txt1").textContent = "id=" + tg.initDataUnsafe.user.id;
     let cart = [];
 
     function addToCart(name, price) {
-        cart.push({name, price});
+        //cart.push({name, price});
         // Налаштовуємо Головну Кнопку Telegram знизу екрана
-        tg.MainButton.text = 'Оформити замовлення (${cart.length})';
+        tg.MainButton.text = "Оформити замовлення " + name; //  (${cart.length})
         tg.MainButton.show();
     }
 
